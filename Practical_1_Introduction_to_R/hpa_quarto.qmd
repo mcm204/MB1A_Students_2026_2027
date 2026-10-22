@@ -1,0 +1,10 @@
+---
+title: "HPA analysis"
+author: "mcm204"
+---
+
+I am calculating the number of genes labelled 'regionally elevated' in the forebrain of humans, pigs and mice.
+```{r}
+total <- sum(180, 109, 55, 83, 157, 185, 57, 31, 60, 110, 45, 98)
+print(total)
+```

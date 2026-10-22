@@ -1,0 +1,40 @@
+---
+title: "Prac1 exercises"
+---
+
+```{r}
+print(round(3.14159, 0))
+```
+
+```{r}
+print(rep(seq(1,10,3), 2))
+```
+```{r}
+print(rep(5, 7))
+```
+```{r}
+number <- 5
+string <-  "Hello World!"
+bool <-  TRUE
+print(class(number))
+```
+```{r}
+cellid_1 <- "CX1"
+cellid_2 <- "CX2"
+
+treated_1 <- TRUE
+treated_2 <- FALSE
+
+nbefore_1 <- 5415
+nbefore_2 <- 8123
+
+nafter_1 <- 1432
+nafter_2 <- 7543
+```
+
+```{r}
+x <- NA
+print(x == NA)
+print(is.na(x))
+```
+
