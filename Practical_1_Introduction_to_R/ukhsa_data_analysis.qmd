@@ -1,0 +1,12 @@
+---
+title: "ukhsa_data_analysis"
+---
+acquiring a CSV file and then formatting it using gt(). head() function used to only retrieve first row
+```{r}
+library(tidyverse)
+library(gt)
+
+rhinovirus <- read.csv("data/ukhsa-chart-download-rhinovirus.csv")
+gt(head(rhinovirus))
+```
+

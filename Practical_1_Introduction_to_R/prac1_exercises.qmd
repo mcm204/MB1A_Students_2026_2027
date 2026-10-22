@@ -3,6 +3,12 @@ title: "Prac1 exercises"
 ---
 
 ```{r}
+library(tidyverse)
+library(gt)
+```
+
+
+```{r}
 print(round(3.14159, 0))
 ```
 
@@ -34,7 +40,26 @@ nafter_2 <- 7543
 
 ```{r}
 x <- NA
-print(x == NA)
 print(is.na(x))
+```
+```{r}
+cell_ID <- c("CX1", "CX2")
+treated <- c(TRUE, FALSE)
+numcells_before <- c(5415, 8123)
+numcells_after <- c(1432, 7543)
+
+all_my_pets <- c("dog", "horse", "guinea pig", "chicken", "cat")
+animal1 <- all_my_pets[4]
+print(animal1)
+```
+```{r}
+celldata <- tibble(
+  row1 = cell_ID,
+  row2 = treated,
+  row3 = numcells_before,
+  row4 = numcells_after
+  
+)
+gt(celldata)
 ```
 
