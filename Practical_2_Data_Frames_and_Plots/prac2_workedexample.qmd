@@ -1,0 +1,37 @@
+---
+title: "prac2_workedexample"
+---
+
+```{r}
+library(gt)
+library(tidyverse)
+library(maps)
+
+#Importing raw data
+
+locations_raw <- read.csv("data/breeding_site_locations.csv")
+glimpse(locations)
+print(dim(locations))
+
+mig_patterns_raw <- read.csv("data/migratory_connectivity_dataset.csv")
+glimpse(mig_patterns)
+
+
+
+#Selecting needed data
+
+# distinct() only selects unique rows
+
+locations <- locations_raw |> select(Site, Latitude, Longitude) |> distinct() |> rename(Breeding_Lat = Latitude, Breeding_Lon = Longitude)
+
+gt(locations)
+
+mig_patterns <- mig_patterns_raw |> select(Site, winterLongitude, winterLatitude, pslon, pslat, iblon, iblat, awestlon, awestlat) |> distinct() |> rename(Stopover_Lat = pslat, Stopover_Lon = pslon, Iberian_Lat = iblat, Iberian_Lon = iblon, Westmost_Lat = awestlat, Westmost_Lon = awestlon)
+
+gt(mig_patterns)
+
+#Excluding Spain, which has no relevant data for this
+locations_exc <- locations |> filter(Site != "Spain")
+mig_patterns_exc <- mig_patterns |> filter(Site != "Spain")
+```
+

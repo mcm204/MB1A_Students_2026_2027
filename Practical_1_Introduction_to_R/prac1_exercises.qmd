@@ -62,4 +62,15 @@ celldata <- tibble(
 )
 gt(celldata)
 ```
+```{r}
+rhinovirus <- read_csv("data/ukhsa-chart-download-rhinovirus.csv")
+ggplot(rhinovirus, aes(
+  x = date,
+  y = metric_value
+)) +
+  geom_line(colour = "red") + 
+  xlab("Date") + 
+  ylab("Number") +
+  ggtitle("Rhinovirus incidents")
+```
 
