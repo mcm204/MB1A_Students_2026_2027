@@ -2,6 +2,7 @@
 title: "prac2_workedexample"
 ---
 
+Importing data
 ```{r}
 library(gt)
 library(tidyverse)
@@ -10,11 +11,11 @@ library(maps)
 #Importing raw data
 
 locations_raw <- read.csv("data/breeding_site_locations.csv")
-glimpse(locations)
-print(dim(locations))
+glimpse(locations_raw)
+print(dim(locations_raw))
 
 mig_patterns_raw <- read.csv("data/migratory_connectivity_dataset.csv")
-glimpse(mig_patterns)
+glimpse(mig_patterns_raw)
 
 
 
@@ -22,16 +23,66 @@ glimpse(mig_patterns)
 
 # distinct() only selects unique rows
 
-locations <- locations_raw |> select(Site, Latitude, Longitude) |> distinct() |> rename(Breeding_Lat = Latitude, Breeding_Lon = Longitude)
+locations <- locations_raw |> select(Site, Latitude, Longitude) |> distinct() |> rename(Breeding_Latitude = Latitude, Breeding_Longitude = Longitude)
 
-gt(locations)
 
-mig_patterns <- mig_patterns_raw |> select(Site, winterLongitude, winterLatitude, pslon, pslat, iblon, iblat, awestlon, awestlat) |> distinct() |> rename(Stopover_Lat = pslat, Stopover_Lon = pslon, Iberian_Lat = iblat, Iberian_Lon = iblon, Westmost_Lat = awestlat, Westmost_Lon = awestlon)
+mig_patterns <- mig_patterns_raw |> select(Site, winterLongitude, winterLatitude, pslon, pslat, iblon, iblat, awestlon, awestlat) |> distinct() |> rename(Winter_Lon = winterLongitude, Winter_Lat = winterLatitude, Stopover_Lat = pslat, Stopover_Lon = pslon, Iberian_Lat = iblat, Iberian_Lon = iblon, Westmost_Lat = awestlat, Westmost_Lon = awestlon)
 
-gt(mig_patterns)
 
 #Excluding Spain, which has no relevant data for this
 locations_exc <- locations |> filter(Site != "Spain")
 mig_patterns_exc <- mig_patterns |> filter(Site != "Spain")
+
+#gt(mig_patterns_exc)
+```
+
+Working with data
+```{r}
+
+#First, group mig_patterns_exc by site 
+#Then, calculate summary statistics using summarise() and other function parameters inside it like max() or min()
+#Obviously you can only find a max or a min of a group of data - this is where the grouping from earlier comes in, so groups have been pre-made by site
+
+mig_patterns_grp <- mig_patterns_exc |> group_by(Site)
+avg_mig_patterns <- mig_patterns_grp |> summarise(
+  Stopover_Latitude = median(Stopover_Lat, na.rm = TRUE),
+  Stopover_Longitude = median(Stopover_Lon, na.rm = TRUE),
+  Iberian_Latitude = median(Iberian_Lat, na.rm = TRUE),
+  Iberian_Longitude = median(Iberian_Lon, na.rm = TRUE),
+  Westmost_Latitude = median(Westmost_Lat, na.rm = TRUE),
+  Westmost_Longitude = median(Westmost_Lon, na.rm = TRUE),
+  Winter_Latitude = median(Winter_Lat, na.rm = TRUE),
+  Winter_Longitude = median(Winter_Lon, na.rm = TRUE)
+  
+)
+
+#gt(avg_mig_patterns)
+
+#Now joining the groups
+combined_bird_data <- full_join(avg_mig_patterns, locations_exc)
+#gt(combined_bird_data)
+
+#Now converting from wide format to long format - first select all columns ending with '_Longitude/Latitude', separate into two columns at the '_', then create a new column called 'Location_Type', and put the values in the corresponding Latitude or Longitude column. (quite a complicated function)
+combined_bird_piv <- combined_bird_data |>
+  pivot_longer(
+    cols = ends_with(c("_Longitude", "_Latitude")),
+    names_sep = "_",
+    names_to = c("Location_Type", ".value")
+  )
+
+#gt(combined_bird_piv)
+
+
+#Now creating two subsets for our two plots
+
+spr_filter <- c("Breeding", "Stopover", "Winter")
+spring_data <- combined_bird_piv |> filter(Location_Type %in% spr_filter)
+
+aut_filter <- c("Breeding", "Iberian", "Westmost", "Winter")
+autumn_data <- combined_bird_piv |> filter(Location_Type %in% aut_filter)
+
+gt(spring_data)
+gt(autumn_data)
+
 ```
 
