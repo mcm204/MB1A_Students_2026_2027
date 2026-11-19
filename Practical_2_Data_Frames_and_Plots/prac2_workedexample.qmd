@@ -81,6 +81,9 @@ spring_data <- combined_bird_piv |> filter(Location_Type %in% spr_filter)
 aut_filter <- c("Breeding", "Iberian", "Westmost", "Winter")
 autumn_data <- combined_bird_piv |> filter(Location_Type %in% aut_filter)
 
+#Reordering data so that the plotting later plots the paths in the correct order (breeding -> stopover -> winter)
+spring_data <- arrange(spring_data, Site, Location_Type)
+
 gt(spring_data)
 gt(autumn_data)
 
