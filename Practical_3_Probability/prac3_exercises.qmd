@@ -1,0 +1,31 @@
+---
+title: "prac3_exercises"
+---
+```{r}
+library(tidyverse)
+library(gt)
+set.seed(42)
+```
+
+```{r}
+
+for (i in 1:20) {
+  print(i^3)
+}
+```
+
+```{r}
+breakfast <- c("eggs", "bacon", "sausages", "toast")
+all_courses = tibble()
+
+for (i in 1:10) {
+  next_course = tibble(
+    Food = sample(breakfast, size=1),
+    Amount = sample(5, size=1)
+  )
+  all_courses <- bind_rows(all_courses, next_course)
+}
+
+gt(all_courses)
+```
+
