@@ -1,0 +1,75 @@
+---
+title: "squirrels"
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+library(cowsay)
+set.seed(42)
+
+
+trials <- sample(c("Success", "Fail"), replace=TRUE, prob = c(0.3, 0.7), size=150)
+n_successes <- sum(trials == "Success")
+say(paste0("I succeeded ", n_successes, " times"), by="squirrel")
+
+
+```
+
+```{r}
+
+
+combined_successes <- c()
+for (i in 1:1000) {
+  trials <- sample(c("SUCCESS", "FAILURE"),
+    size = 150,
+    replace = TRUE,
+    prob = c(0.3, 0.7)
+  )
+  #N successes per individual squirrel trialling 150 nuts
+  n_successes <- sum(trials == "SUCCESS")
+  #A growing vector showing the outcome of each of the 1000 squirrels' trials
+  combined_successes <- c(combined_successes, n_successes)
+}
+
+df_squirrels <- tibble("N_Successful_Heists" = combined_successes)
+ggplot(
+  df_squirrels,
+  aes(
+    x = N_Successful_Heists
+  ) 
+) +
+  geom_bar() + 
+  ggtitle("Number of successful heists per squirrel (simulated)")
+
+```
+
+
+Plotting a binomial dist
+
+```{r}
+#Want to plot X~B(150, 0.3) - same as our data before
+#Have to do by hand by calculating each (PX=x) and graphinh
+
+calculated_bdist <- c()
+x_values <- c()
+
+for (i in 1:150) {
+  prob <- dbinom(i, 150, 0.3)
+  x_values <- c(x_values, i)
+  calculated_bdist <- c(calculated_bdist, prob)
+}
+bdist <- tibble("x" = x_values, "p" = calculated_bdist)
+
+ggplot(
+  bdist,
+  aes(
+    x = x,
+    y = p
+  )
+) +
+  geom_col() +
+  ggtitle("Binomial distribution for n=150, p=0.3")
+
+```
+
