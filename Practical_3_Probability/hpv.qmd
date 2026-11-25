@@ -1,0 +1,14 @@
+---
+title: "hpv"
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+set.seed(42)
+
+hpv_rawdata <- read_csv("data/cm_all_ages.csv")
+
+
+```
+

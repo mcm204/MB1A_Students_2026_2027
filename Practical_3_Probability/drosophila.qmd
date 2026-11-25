@@ -1,0 +1,67 @@
+---
+title: "drosophila"
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+set.seed(42)
+
+#Data about mutation rates in drosophila
+dros_raw <- read_csv("data/drosophila_counts.csv")
+
+dros_summary <- summarise(dros_raw, 
+                          total_nm = sum(Novel_Mutation_Count),
+                          max_nm = max(Novel_Mutation_Count),
+                          mean_nm = mean(Novel_Mutation_Count),
+                          variance_nm = var(Novel_Mutation_Count))
+
+gt(dros_summary)
+
+ggplot(dros_raw,
+       aes(
+         x = Novel_Mutation_Count
+       )) + 
+  geom_bar()
+```
+
+Want to know whether this data is Poisson distributed - we have a slight discrepancy between mean and var.
+One way to do figure out whether it is Poisson is to simulate observations of same sample size (17) from a true Poisson, and look at the magnitude of discrepancies in these simulations, to compare to our discrepancy.
+
+```{r}
+
+sim_mean <- c()
+sim_var <- c()
+sim_dif <- c()
+
+
+for (i in 1:1000) {
+samplemean = dros_summary |> pull(mean_nm)
+
+simulated_counts <- rpois(
+  n = 17,
+  lambda = samplemean
+)
+sim_mean <- c(sim_mean, mean(simulated_counts))
+sim_var <- c(sim_var, var(simulated_counts))
+sim_dif <- c(sim_dif, abs(mean(simulated_counts) - var(simulated_counts)))
+}
+
+df_sim <- tibble(
+  mean = sim_mean,
+  var = sim_var,
+  dif = sim_dif
+)
+
+
+ggplot(
+  df_sim,
+  aes(
+    x = dif
+  )
+) + 
+  geom_histogram(aes(y = after_stat(density))) + 
+  ggtitle("Distribution of differences between mean and var from simulations") +
+  geom_vline(xintercept = 2.01, color="red")
+```
+
